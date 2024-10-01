@@ -1,82 +1,87 @@
-import React, {useEffect, useRef} from 'react';
-import { View, Text, StyleSheet, Dimensions, Animated } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Dimensions, StyleSheet } from 'react-native';
 import TicketCard from './TicketCard';
 
-const {width: screenWidth} = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get('window'); // Get the screen width for positioning
+
+// A simple utility to get a random rarity
+const getRandomRarity = () => {
+  const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
+  //TODO: Change the probabilities of rarities
+  return rarities[Math.floor(Math.random() * rarities.length)];
+};
 
 const SpinContainer: React.FC = () => {
-    const ticketCount: number = 5;
-    const ticketSize: number = screenWidth * 0.18;
-    const tickets = Array.from({length: ticketCount}, (_, i) => `TicketCard ${i + 1}`);
+  const ticketWidth = 100; // Fixed width of each ticket
+  const numTickets = 5; // Number of tickets to display
+  const [ticketPositions, setTicketPositions] = useState<number[]>([]); // Track the x-positions of each ticket
+  const [ticketRarities, setTicketRarities] = useState<string[]>([]); // Track the rarity of each ticket
+  const [speed, setSpeed] = useState(2); // Speed at which tickets move
 
-    const speedPerPixel: number = 5;
+  // Initialize ticket positions and rarities when the component mounts
+  useEffect(() => {
+    const initialPositions = [];
+    const initialRarities = [];
+    
+    for (let i = 0; i < numTickets; i++) {
+      initialPositions.push(screenWidth + i * (ticketWidth + 10)); // Set even spacing between tickets
+      initialRarities.push(getRandomRarity()); // Assign random rarity
+    }
+    
+    setTicketPositions(initialPositions);
+    setTicketRarities(initialRarities);
+  }, []);
 
-    const animatedValues = useRef<Animated.Value[]>(
-        tickets.map(() => new Animated.Value(0))
-    ).current;
+  // Move tickets continuously
+  useEffect(() => {
+    const interval = setInterval(() => {
+      let someIndex: number | null = null;
 
-    useEffect(() => {
-        animatedValues.forEach((animatedValue, index) => {
-            animateTicket(animatedValue, index);
+      setTicketPositions((prevPositions) => {
+        return prevPositions.map((pos, index) => {
+          const newPos = pos - speed; // Move left by the speed value
+
+          // Check if the ticket is off screen
+          if (newPos < -ticketWidth) {
+            someIndex = index;
+            const maxPos = Math.max(...prevPositions); // Get the current rightmost position
+            return maxPos + ticketWidth + 10; // Place the ticket behind the last one
+          }
+
+          return newPos;
         });
-    });
+      });
 
-    const animateTicket = (animatedValue: Animated.Value, index: number) => {
-        const initialPosition = screenWidth + index * (ticketSize + 10); // Start position on the right
-        const endPosition = -ticketSize; // End position off the left
+      setTicketRarities((prevRarities) => {
+          return prevRarities.map((rarity, index) => {
+            if (someIndex == index) {
+              return getRandomRarity();
+            }
+            return rarity;
+          });
+      });
 
-        const distance = initialPosition - endPosition;
+    }, 16); // Move every 16ms (around 60 frames per second)
 
-        const duration = distance * speedPerPixel;
+    return () => clearInterval(interval); // Cleanup the interval when the component unmounts
+  }, [speed]); // The effect depends on the speed
 
-        animatedValue.setValue(initialPosition); // Set initial position
-        
-        Animated.timing(animatedValue, {
-            toValue: endPosition,
-            duration: duration, // Time for the ticket to travel across the screen
-            useNativeDriver: true,
-        }).start(() => {
-            // After animation ends, reset position to right
-            animateTicket(animatedValue, index);
-        });
-    };
-
-    return (
-        <View style={styles.container}>
-            {tickets.map((ticket, index) => (
-                <TicketCard key={index} rarity={ticket} xPosition={animatedValues[index]} />
-        ))}
-        </View>
-    );
-}
-
-
-/*
-
-export default function SpinContainer() {
-    return (
-        <View style={styles.container}>
-            <TicketCard/>
-            <TicketCard/>
-            <TicketCard/>
-            <TicketCard/>
-            <TicketCard/>
-        </View>
-    )
-}
-
-*/
+  return (
+    <View style={styles.container}>
+      {ticketPositions.map((pos, index) => (
+        <TicketCard key={index} rarity={ticketRarities[index]} xPosition={pos} />
+      ))}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#999',
-        alignItems: 'center',
-        position: 'relative',
-        //justifyContent: 'space-evenly',
-        flexDirection: 'row',
-        width: '160%',
-        height: '20%',
-    },
+  container: {
+    position: 'relative',
+    width: '100%',
+    height: 100, // The height of the ticket container
+    overflow: 'hidden', // Hide the parts of tickets that move off-screen
+  },
 });
 
 export default SpinContainer;
