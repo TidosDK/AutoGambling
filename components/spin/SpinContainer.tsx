@@ -24,7 +24,7 @@ const SpinContainer: React.FC = () => {
     const initialRarities = [];
     
     for (let i = 0; i < numTickets; i++) {
-      initialPositions.push(screenWidth + i * (ticketWidth + 10)); // Set even spacing between tickets
+      initialPositions.push(i * (ticketWidth + 10)); // Set even spacing between tickets
       initialRarities.push(getRandomRarity()); // Assign random rarity
     }
     
