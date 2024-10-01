@@ -9,6 +9,8 @@ fi
 # Sources utils folder
 . ./ci/utils/utils.sh
 
+npm install
+
 if [ "$1" = "tunnel" ]; then
     npx expo start --tunnel
 elif [ "$1" = "normal" ]; then
