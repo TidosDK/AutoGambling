@@ -1,17 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Animated } from "react-native";
 
 
-export default function TicketCard() {
+interface TicketProp {
+    rarity: string;
+    xPosition: Animated.Value;
+}
+
+const TicketCard: React.FC<TicketProp> = ({rarity, xPosition}) => {
     return (
-        <View style={styles.container}>
-            <Text>Ticket!</Text>
-        </View>
+        <Animated.View style={[styles.ticketCard, { transform:[{ translateX: xPosition}] }]}>
+            <Text>{rarity}</Text>
+        </Animated.View>
     )
 }
 
+export default TicketCard;
+
+
 const styles = StyleSheet.create({
-    container: {
+    ticketCard: {
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
