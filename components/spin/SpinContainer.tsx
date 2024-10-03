@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Dimensions, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import TicketCard from './TicketCard';
-
-const { width: screenWidth } = Dimensions.get('window'); // Get the screen width for positioning
 
 // A simple utility to get a random rarity
 const getRandomRarity = () => {
@@ -11,12 +9,19 @@ const getRandomRarity = () => {
   return rarities[Math.floor(Math.random() * rarities.length)];
 };
 
-const SpinContainer: React.FC = () => {
+interface SpinContainerProp {
+  speed: number;
+  ticketPositions: number[];
+  setTicketPositions: React.Dispatch<React.SetStateAction<number[]>>;
+  ticketRarities: string[];
+  setTicketRarities: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const SpinContainer: React.FC<SpinContainerProp> = ({speed, ticketPositions, setTicketPositions, ticketRarities, setTicketRarities}) => {
   const ticketWidth = 100; // Fixed width of each ticket
   const numTickets = 5; // Number of tickets to display
-  const [ticketPositions, setTicketPositions] = useState<number[]>([]); // Track the x-positions of each ticket
-  const [ticketRarities, setTicketRarities] = useState<string[]>([]); // Track the rarity of each ticket
-  const [speed, setSpeed] = useState(2); // Speed at which tickets move
+  //const [ticketPositions, setTicketPositions] = useState<number[]>([]); // Track the x-positions of each ticket
+  //const [ticketRarities, setTicketRarities] = useState<string[]>([]); // Track the rarity of each ticket
 
   // Initialize ticket positions and rarities when the component mounts
   useEffect(() => {
@@ -79,8 +84,10 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     width: '100%',
-    height: 100, // The height of the ticket container
+    height: 120, // The height of the ticket container
     overflow: 'hidden', // Hide the parts of tickets that move off-screen
+    backgroundColor: '#EEE',
+    justifyContent: 'center',
   },
 });
 
