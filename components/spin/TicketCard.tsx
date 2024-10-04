@@ -2,15 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 interface TicketProps {
-  rarity: string; // Rarity or appearance of the ticket
-  xPosition: number; // Horizontal position
+  rarity: string;
+  xPosition: number;
 }
 
 const getBackgroundColor = (rarity: string) => {
   if (rarity == 'Common')
     return '#b9cde1';
-  if (rarity == 'Uncommon')
-    return '#82f0be';
   if (rarity == 'Rare')
     return '#73dce6';
   if (rarity == 'Epic')
@@ -31,13 +29,18 @@ const TicketCard: React.FC<TicketProps> = ({ rarity, xPosition }) => {
 
 const styles = StyleSheet.create({
   ticket: {
-    position: 'absolute', // Allow us to position it freely
-    width: 100, // Set width for the ticket
-    height: 100, // Set height for the ticket
-    backgroundColor: 'skyblue', // Default color
-    justifyContent: 'center', // Center text vertically
-    alignItems: 'center', // Center text horizontally
+    position: 'absolute', 
+    width: 100, 
+    height: 100, 
+    backgroundColor: 'skyblue', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
     borderRadius: 5,
+    shadowColor: '#000',        
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,    
   },
   text: {
     color: 'white',

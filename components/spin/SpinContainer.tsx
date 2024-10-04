@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import TicketCard from './TicketCard';
 
-// A simple utility to get a random rarity
 const getRandomRarity = () => {
-  const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
-  //TODO: Change the probabilities of rarities
-  return rarities[Math.floor(Math.random() * rarities.length)];
+  const rarities = ['Common', 'Rare', 'Epic', 'Legendary'];
+  const rand : number = Math.random();
+  if (rand < 0.6)
+    return rarities[0];
+  if (rand < 0.85)
+    return rarities[1];
+  if (rand < 0.95)
+    return rarities[2];
+  return rarities[3];
 };
 
 interface SpinContainerProp {
@@ -18,12 +23,9 @@ interface SpinContainerProp {
 }
 
 const SpinContainer: React.FC<SpinContainerProp> = ({speed, ticketPositions, setTicketPositions, ticketRarities, setTicketRarities}) => {
-  const ticketWidth = 100; // Fixed width of each ticket
-  const numTickets = 5; // Number of tickets to display
-  //const [ticketPositions, setTicketPositions] = useState<number[]>([]); // Track the x-positions of each ticket
-  //const [ticketRarities, setTicketRarities] = useState<string[]>([]); // Track the rarity of each ticket
+  const ticketWidth = 100;
+  const numTickets = 5; 
 
-  // Initialize ticket positions and rarities when the component mounts
   useEffect(() => {
     const initialPositions = [];
     const initialRarities = [];
@@ -69,7 +71,7 @@ const SpinContainer: React.FC<SpinContainerProp> = ({speed, ticketPositions, set
     }, 16); // Move every 16ms (around 60 frames per second)
 
     return () => clearInterval(interval); // Cleanup the interval when the component unmounts
-  }, [speed]); // The effect depends on the speed
+  }, [speed]);
 
   return (
     <View style={styles.container}>
@@ -84,8 +86,8 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     width: '100%',
-    height: 120, // The height of the ticket container
-    overflow: 'hidden', // Hide the parts of tickets that move off-screen
+    height: 140,
+    overflow: 'hidden',
     backgroundColor: '#EEE',
     justifyContent: 'center',
   },
