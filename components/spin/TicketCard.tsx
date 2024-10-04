@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 
 interface TicketProps {
   rarity: string;
@@ -15,6 +15,7 @@ const getBackgroundColor = (rarity: string) => {
     return '#b982e6';
   if (rarity == 'Legendary')
     return '#f0bf64';
+  return '#b9cde1';
 }
 
 const TicketCard: React.FC<TicketProps> = ({ rarity, xPosition }) => {
@@ -22,7 +23,10 @@ const TicketCard: React.FC<TicketProps> = ({ rarity, xPosition }) => {
   
   return (
     <View style={[styles.ticket, { left: xPosition }, {backgroundColor: bgColor}]}>
-      <Text style={styles.text}>{rarity}</Text>
+      {rarity == 'Common' && <Image style={[{height: 60, width: 60}]} source={require('../../assets/car-common.png')}/>}
+      {rarity == 'Rare' && <Image style={[{height: 65, width: 65}]} source={require('../../assets/car-rare.png')}/>}
+      {rarity == 'Epic' && <Image style={[{height: 70, width: 70}]} source={require('../../assets/car-epic.png')}/>}
+      {rarity == 'Legendary' && <Image style={[{height: 80, width: 80}]} source={require('../../assets/car-legendary.png')}/>}
     </View>
   );
 };
