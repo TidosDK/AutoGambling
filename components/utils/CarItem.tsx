@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 type Car = {
   id: string
@@ -12,7 +13,15 @@ type Car = {
 };
 
 export default function CarItem(Car: Car) {
+
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate('Product View', {...Car});
+  };
+
   return (
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
     <View style={styles.container}>
       <View style={styles.textContainer}>
         <Text style={styles.idText}>ID: {Car.id.toString()}</Text>
@@ -23,6 +32,7 @@ export default function CarItem(Car: Car) {
         <Text style={styles.mileage}>Price Per Day: {Car.pricePerDay.toString()} DKK</Text>
       </View>
     </View>
+    </TouchableOpacity>
   );
 }
 
