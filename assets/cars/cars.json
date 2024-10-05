@@ -1,0 +1,182 @@
+[
+    {
+      "id": 1,
+      "make": "Tesla",
+      "model": "Model S",
+      "year": 2020,
+      "color": "Red",
+      "pricePerDay": 100,
+      "isAvailable": true
+    },
+    {
+      "id": 2,
+      "make": "Ford",
+      "model": "Mustang",
+      "year": 2018,
+      "color": "Blue",
+      "pricePerDay": 85,
+      "isAvailable": true
+    },
+    {
+      "id": 3,
+      "make": "BMW",
+      "model": "3 Series",
+      "year": 2019,
+      "color": "Black",
+      "pricePerDay": 90,
+      "isAvailable": false
+    },
+    {
+      "id": 4,
+      "make": "Toyota",
+      "model": "Camry",
+      "year": 2021,
+      "color": "Silver",
+      "pricePerDay": 60,
+      "isAvailable": true
+    },
+    {
+      "id": 5,
+      "make": "Chevrolet",
+      "model": "Camaro",
+      "year": 2021,
+      "color": "Yellow",
+      "pricePerDay": 95,
+      "isAvailable": false
+    },
+    {
+      "id": 6,
+      "make": "Honda",
+      "model": "Civic",
+      "year": 2020,
+      "color": "White",
+      "pricePerDay": 55,
+      "isAvailable": true
+    },
+    {
+      "id": 7,
+      "make": "Audi",
+      "model": "A4",
+      "year": 2022,
+      "color": "Grey",
+      "pricePerDay": 110,
+      "isAvailable": true
+    },
+    {
+      "id": 8,
+      "make": "Mercedes-Benz",
+      "model": "C-Class",
+      "year": 2019,
+      "color": "Black",
+      "pricePerDay": 120,
+      "isAvailable": false
+    },
+    {
+      "id": 9,
+      "make": "Nissan",
+      "model": "Altima",
+      "year": 2020,
+      "color": "White",
+      "pricePerDay": 65,
+      "isAvailable": true
+    },
+    {
+      "id": 10,
+      "make": "Hyundai",
+      "model": "Elantra",
+      "year": 2021,
+      "color": "Blue",
+      "pricePerDay": 50,
+      "isAvailable": true
+    },
+    {
+      "id": 11,
+      "make": "Ford",
+      "model": "Explorer",
+      "year": 2018,
+      "color": "Grey",
+      "pricePerDay": 75,
+      "isAvailable": true
+    },
+    {
+      "id": 12,
+      "make": "Jeep",
+      "model": "Wrangler",
+      "year": 2022,
+      "color": "Green",
+      "pricePerDay": 130,
+      "isAvailable": false
+    },
+    {
+      "id": 13,
+      "make": "Chevrolet",
+      "model": "Tahoe",
+      "year": 2020,
+      "color": "Black",
+      "pricePerDay": 115,
+      "isAvailable": true
+    },
+    {
+      "id": 14,
+      "make": "Volkswagen",
+      "model": "Jetta",
+      "year": 2019,
+      "color": "Red",
+      "pricePerDay": 60,
+      "isAvailable": true
+    },
+    {
+      "id": 15,
+      "make": "Mazda",
+      "model": "CX-5",
+      "year": 2021,
+      "color": "White",
+      "pricePerDay": 80,
+      "isAvailable": false
+    },
+    {
+      "id": 16,
+      "make": "Subaru",
+      "model": "Outback",
+      "year": 2018,
+      "color": "Blue",
+      "pricePerDay": 70,
+      "isAvailable": true
+    },
+    {
+      "id": 17,
+      "make": "Dodge",
+      "model": "Charger",
+      "year": 2021,
+      "color": "Black",
+      "pricePerDay": 95,
+      "isAvailable": true
+    },
+    {
+      "id": 18,
+      "make": "Kia",
+      "model": "Optima",
+      "year": 2020,
+      "color": "Silver",
+      "pricePerDay": 55,
+      "isAvailable": false
+    },
+    {
+      "id": 19,
+      "make": "Tesla",
+      "model": "Model 3",
+      "year": 2022,
+      "color": "White",
+      "pricePerDay": 105,
+      "isAvailable": true
+    },
+    {
+      "id": 20,
+      "make": "BMW",
+      "model": "X5",
+      "year": 2021,
+      "color": "Blue",
+      "pricePerDay": 120,
+      "isAvailable": false
+    }
+  ]
