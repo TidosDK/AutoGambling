@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal, Button } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import { Picker } from "@react-native-picker/picker";
+import { Calendar, DateObject } from 'react-native-calendars';
 
 type RouteParams = {
     make: string;
@@ -26,125 +26,225 @@ export default function ProductView() {
     const [extraKM, setExtraKM] = useState(0);
     const [extraDriver, setExtraDriver] = useState(0);
 
-    const [startDay, setStartDay] = useState("01");
-    const [startMonth, setStartMonth] = useState("01");
-    const [startYear, setStartYear] = useState("2024");
+    const extra_km_cost = 100;
+    const extra_driver_cost = 150;
 
-    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(0);
 
-    const incrementKM = () => setExtraKM(extraKM + 1);
-    const decrementKM = () => extraKM > 0 && setExtraKM(extraKM - 1);
+    const [selectedRange, setSelectedRange] = useState<{ [date: string]: { startingDay?: boolean; endingDay?: boolean; color: string } }>({});
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    const handleDayPress = (day: DateObject) => {
+        const selectedDate = day.dateString;
+
+        if (Object.keys(selectedRange).length === 0) {
+            // Start selecting a date range (set starting date)
+            setSelectedRange({
+                [selectedDate]: { startingDay: true, endingDay: true, color: "#70d7c7" },
+            });
+        } else {
+            const dates = Object.keys(selectedRange);
+            const startDate = dates[0];
+            const daysDifference = new Date(selectedDate).getTime() - new Date(startDate).getTime();
+
+            if (daysDifference < 0) {
+                // If selected date is before the start date, reset to new start date
+                setSelectedRange({
+                    [selectedDate]: { startingDay: true, endingDay: true, color: "#70d7c7" },
+                });
+            } else {
+                // Select an end date and highlight range between start and end
+                const newRange = {};
+                let currentDate = new Date(startDate);
+                for (let i = 0; i <= daysDifference / (1000 * 60 * 60 * 24); i++) {
+                    const formattedDate = currentDate.toISOString().split("T")[0];
+                    newRange[formattedDate] = {
+                        startingDay: i === 0,
+                        endingDay: i === daysDifference / (1000 * 60 * 60 * 24),
+                        color: "#70d7c7",
+                    };
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                setSelectedRange(newRange);
+            }
+        }
+    };
+
+    const openDatePicker = () => {
+        setSelectedRange({});
+        setShowDatePicker(true);
+    };
+
+    const calculateTotalDays = () => {
+        const dates = Object.keys(selectedRange);
+        if (dates.length > 1) {
+            const startDate = new Date(dates[0]);
+            const endDate = new Date(dates[dates.length - 1]);
+            return Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        }
+        return 1;
+    };
+
+    const daysRented = calculateTotalDays();
+
+    const calculateTotalPrice = () => {
+        const numberOfDays = calculateTotalDays();
+        const kmCost = (extraKM / 100) * extra_km_cost; /* divide by 100 to offset the 100 extra kilometers added */
+        const driverCost = extraDriver > 0 ? extraDriver * extra_driver_cost * numberOfDays : 0;
+        const dayCost = numberOfDays > 0 ? pricePerDay * numberOfDays : 0;
+        const tax = (kmCost + driverCost + dayCost) * 0.25;
+        return kmCost + driverCost + dayCost + tax;
+    };
+
+    useEffect(() => {
+        setTotalPrice(calculateTotalPrice());
+    }, [extraKM, extraDriver, selectedRange]);
+
+    const incrementKM = () => setExtraKM(extraKM + 100);
+    const decrementKM = () => extraKM > 0 && setExtraKM(extraKM - 100);
 
     const incrementDriver = () => setExtraDriver(extraDriver + 1);
     const decrementDriver = () => extraDriver > 0 && setExtraDriver(extraDriver - 1);
-
-    const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, "0"));
-    const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, "0"));
-    const years = Array.from({ length: 50 }, (_, i) => (new Date().getFullYear() + i).toString());
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={styles.scrollContainer}>
             <View style={styles.container}>
                 <Text style={styles.title}>{make} {model}</Text>
 
-                {/* Main image */}
                 <Image source={require('../../assets/images/NotFound.png')} style={styles.mainImage} />
 
-                {/* Smaller pictures */}
                 <View style={styles.thumbnailContainer}>
                     <Image source={require('../../assets/images/NotFound.png')} style={styles.thumbnail} />
                     <Image source={require('../../assets/images/NotFound.png')} style={styles.thumbnail} />
                     <Image source={require('../../assets/images/NotFound.png')} style={styles.thumbnail} />
                 </View>
 
-                <Text>Year: {year}</Text>
-                <Text>Color: {color}</Text>
-                <Text>Price Per Day: {pricePerDay}</Text>
-                <Text>Availability: {isAvailable ? 'Available' : 'Not Available'}</Text>
 
-                {/* Date Selection Area */}
+
+                <View style={styles.priceContainer}>
+                    <View style={styles.textRow}>
+                    <Text style={styles.infoLabel}>Year:</Text>
+                        <Text style={styles.infoValue}>{year}</Text>
+                    </View>
+                    <View style={styles.textRow}>
+                        <Text style={styles.infoLabel}>Color:</Text>
+                        <Text style={styles.infoValue}>{color}</Text>
+                    </View>
+                    <View style={styles.textRow}>
+                        <Text style={styles.infoLabel}>Price per day:</Text>
+                        <Text style={styles.infoValue}>{pricePerDay} DKK</Text>
+                    </View>
+                    <View style={styles.textRow}>
+                        <Text style={styles.infoLabel}>Avaliability:</Text>
+                        <Text style={styles.infoValue}>{isAvailable ? 'Avaliable' : 'Not Available'}</Text>
+                    </View>
+                </View>
+
                 <View style={styles.dateContainer}>
-                    <TouchableOpacity
-                        style={styles.dateInput}
-                        onPress={() => {
-                            setShowStartDatePicker(true);
-                        }}
-                    >
+                    <TouchableOpacity style={styles.dateInput} onPress={openDatePicker}>
                         <Text>
-                            {startDay}/{startMonth}/{startYear}
+                            {Object.keys(selectedRange).length > 0
+                                ? `${formatDate(Object.keys(selectedRange)[0])} to ${formatDate(Object.keys(selectedRange)[Object.keys(selectedRange).length - 1])}`
+                                : "Select Dates"}
                         </Text>
                     </TouchableOpacity>
                 </View>
 
-                {/* Start Date Picker Modal */}
                 <Modal
-                    visible={showStartDatePicker}
+                    visible={showDatePicker}
                     animationType="slide"
                     transparent={false}
-                    onRequestClose={() => setShowStartDatePicker(false)}
+                    onRequestClose={() => setShowDatePicker(false)}
                 >
                     <View style={styles.fullScreenModal}>
-                        <Text style={styles.modalTitle}>Select Start Date</Text>
-                        <View style={styles.pickerContainer}>
-                            {/* Day Picker */}
-                            <Picker
-                                selectedValue={startDay}
-                                onValueChange={(itemValue) => setStartDay(itemValue)}
-                                style={styles.picker}
-                            >
-                                {days.map((day) => (
-                                    <Picker.Item key={day} label={day} value={day} />
-                                ))}
-                            </Picker>
-
-                            {/* Month Picker */}
-                            <Picker
-                                selectedValue={startMonth}
-                                onValueChange={(itemValue) => setStartMonth(itemValue)}
-                                style={styles.picker}
-                            >
-                                {months.map((month) => (
-                                    <Picker.Item key={month} label={month} value={month} />
-                                ))}
-                            </Picker>
-
-                            {/* Year Picker */}
-                            <Picker
-                                selectedValue={startYear}
-                                onValueChange={(itemValue) => setStartYear(itemValue)}
-                                style={styles.picker}
-                            >
-                                {years.map((year) => (
-                                    <Picker.Item key={year} label={year} value={year} />
-                                ))}
-                            </Picker>
+                        <Text style={styles.modalTitle}>Choose Dates</Text>
+                        <Calendar
+                            markingType={'period'}
+                            markedDates={selectedRange}
+                            onDayPress={handleDayPress}
+                            theme={{
+                                textSectionTitleColor: "#b6c1cd",
+                                selectedDayBackgroundColor: "#50cebb",
+                                selectedDayTextColor: "#ffffff",
+                                todayTextColor: "#00adf5",
+                                dayTextColor: "#2d4150",
+                                textDisabledColor: "#d9e1e8",
+                                arrowColor: "#50cebb",
+                                disabledArrowColor: "#d9e1e8",
+                                monthTextColor: "#50cebb",
+                                indicatorColor: "#50cebb",
+                                textDayFontFamily: "monospace",
+                                textMonthFontFamily: "monospace",
+                                textDayHeaderFontFamily: "monospace",
+                                textDayFontWeight: "300",
+                                textMonthFontWeight: "bold",
+                                textDayHeaderFontWeight: "300",
+                                textDayFontSize: 16,
+                                textMonthFontSize: 16,
+                                textDayHeaderFontSize: 16,
+                            }}
+                        />
+                        <View style={styles.buttonContainer}>
+                            <Button title="Cancel" onPress={() => setShowDatePicker(false)} color="#FF6347" />
+                            <Button title="OK" onPress={() => setShowDatePicker(false)} color="#50cebb" />
                         </View>
-
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setShowStartDatePicker(false)}>
-                            <Text style={styles.closeButtonText}>Close</Text>
-                        </TouchableOpacity>
                     </View>
                 </Modal>
 
-                {/* Extra KM and Driver Options */}
                 <View style={styles.optionContainer}>
                     <TouchableOpacity style={styles.counterButton} onPress={decrementKM}>
-                        <Text style={styles.counterButtonText}>-</Text>
+                        <Image source={require('../../assets/images/minus.png')} style={styles.icon} />
                     </TouchableOpacity>
-                    <Text style={styles.optionText}>Add an extra 100 km: {extraKM}</Text>
+                    <View style={styles.optionTextWrapper}>
+                        <Text style={styles.optionText}>Extra km: {extraKM}</Text>
+
+                    </View>
                     <TouchableOpacity style={styles.counterButton} onPress={incrementKM}>
-                        <Text style={styles.counterButtonText}>+</Text>
+                        <Image source={require('../../assets/images/plus.png')} style={styles.icon} />
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.optionContainer}>
                     <TouchableOpacity style={styles.counterButton} onPress={decrementDriver}>
-                        <Text style={styles.counterButtonText}>-</Text>
+                        <Image source={require('../../assets/images/minus.png')} style={styles.icon} />
                     </TouchableOpacity>
-                    <Text style={styles.optionText}>Extra driver: {extraDriver}</Text>
+                    <View style={styles.optionTextWrapper}>
+                        <Text style={styles.optionText}>Additional driver: {extraDriver}</Text>
+
+                    </View>
                     <TouchableOpacity style={styles.counterButton} onPress={incrementDriver}>
-                        <Text style={styles.counterButtonText}>+</Text>
+                        <Image source={require('../../assets/images/plus.png')} style={styles.icon} />
                     </TouchableOpacity>
+                </View>
+                <View style={styles.priceContainer}>
+                    <View style={styles.textRow}>
+                        <Text style={styles.infoLabel}>Added km:</Text>
+                        <Text style={styles.infoValue}>{extraKM}</Text>
+                    </View>
+                    <View style={styles.textRow}>
+                        <Text style={styles.infoLabel}>Added drivers:</Text>
+                        <Text style={styles.infoValue}>{extraDriver}</Text>
+                    </View>
+                    <View style={styles.textRow}>
+                        <Text style={styles.infoLabel}>Number of days:</Text>
+                        <Text style={styles.infoValue}>{daysRented}</Text>
+                    </View>
+                    <View style={styles.textRow}>
+                        <Text style={styles.infoLabel}>Tax:</Text>
+                        <Text style={styles.infoValue}>25%</Text>
+                    </View>
+                    <View style={[styles.textRow, { marginTop: 10 }]}>
+                        <Text style={[styles.infoLabel, styles.totalLabel]}>Total Price:</Text>
+                        <Text style={[styles.infoValue, styles.totalValue]}>{totalPrice} DKK</Text>
+                    </View>
                 </View>
 
                 <TouchableOpacity style={styles.proceedButton}>
@@ -189,7 +289,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     dateContainer: {
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "center",
         marginBottom: 20,
     },
@@ -198,72 +298,109 @@ const styles = StyleSheet.create({
         borderColor: "#ccc",
         borderRadius: 5,
         padding: 10,
-        width: 160,
+        width: screen.availWidth * 0.8,
         textAlign: "center",
         backgroundColor: "#f0f0f0",
+        marginVertical: 5,
+        alignItems: "center"
     },
     fullScreenModal: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    pickerContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '100%',
-    },
-    picker: {
-        width: '30%',
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#fff",
     },
     modalTitle: {
         fontSize: 24,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginBottom: 20,
     },
-    closeButton: {
-        marginTop: 20,
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-        backgroundColor: '#007BFF',
-        borderRadius: 10,
-    },
-    closeButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
-    optionContainer: {
+    buttonContainer: {
         flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 15,
+        justifyContent: "space-between",
+        width: "90%",
+        marginTop: 20,
     },
     counterButton: {
-        width: 40,
-        height: 40,
+        width: 50,
+        height: 50,
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#ccc",
-        borderRadius: 5,
+        borderRadius: 20,
     },
     counterButtonText: {
         fontSize: 20,
         fontWeight: "bold",
     },
+    optionContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: screen.availWidth * 0.8,
+        marginBottom: 15,
+    },
+    optionTextWrapper: {
+        flex: 1,
+        marginHorizontal: 10,
+        backgroundColor: "#e6e6e6",
+        borderRadius: 20,
+        height: 50,
+        justifyContent: "center",
+    },
     optionText: {
-        marginHorizontal: 15,
+        textAlign: "center",
         fontSize: 16,
+        lineHeight: 18,
     },
     proceedButton: {
         marginTop: 30,
         paddingVertical: 15,
         paddingHorizontal: 40,
         backgroundColor: "#333",
-        borderRadius: 10,
+        borderRadius: 20,
+        width: screen.availWidth * 0.8,
+        alignItems: "center",
     },
     proceedButtonText: {
         color: "#fff",
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: "bold",
+    },
+    icon: {
+        width: 15,
+        height: 15,
+        resizeMode: "contain",
+    },
+    priceContainer: {
+        marginTop: 20,
+        padding: 20,
+        backgroundColor: "#f9f9f9",
+        borderRadius: 10,
+        width: screen.availWidth * 0.8,
+    },
+    textRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginVertical: 2,
+    },
+    infoLabel: {
+        fontSize: 15,
+        color: "#333",
+        flex: 1,
+        textAlign: "left",
+    },
+    infoValue: {
+        fontSize: 15,
+        color: "#333",
+        textAlign: "right",
+    },
+    totalLabel: {
+        fontWeight: "bold",
+    },
+    totalValue: {
+        fontWeight: "bold",
+        color: "#000",
     },
 });
