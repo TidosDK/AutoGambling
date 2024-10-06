@@ -37,7 +37,7 @@ export default function ProductView() {
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
@@ -46,7 +46,6 @@ export default function ProductView() {
         const selectedDate = day.dateString;
 
         if (Object.keys(selectedRange).length === 0) {
-            // Start selecting a date range (set starting date)
             setSelectedRange({
                 [selectedDate]: { startingDay: true, endingDay: true, color: "#70d7c7" },
             });
@@ -56,12 +55,10 @@ export default function ProductView() {
             const daysDifference = new Date(selectedDate).getTime() - new Date(startDate).getTime();
 
             if (daysDifference < 0) {
-                // If selected date is before the start date, reset to new start date
                 setSelectedRange({
                     [selectedDate]: { startingDay: true, endingDay: true, color: "#70d7c7" },
                 });
             } else {
-                // Select an end date and highlight range between start and end
                 const newRange = {};
                 let currentDate = new Date(startDate);
                 for (let i = 0; i <= daysDifference / (1000 * 60 * 60 * 24); i++) {
