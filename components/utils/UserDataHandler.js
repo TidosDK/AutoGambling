@@ -2,7 +2,7 @@ import User from "./User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const STORAGE_KEY = "@user_data";
-var currentUser = null;
+var currentUserId = null;
 
 const readDataFromJson = async () => {
   try {
@@ -91,6 +91,7 @@ async function generateNewId() {
 export const createUser = async (name, password) => {
   try {
     const newId = await generateNewId();
+    const tokens = 150;
     const newUser = new User(
       newId,
       name,
@@ -101,7 +102,7 @@ export const createUser = async (name, password) => {
         epic: 0,
         legendary: 0,
       },
-      0 // Tokens
+      tokens
     );
 
     await updateUserData([newUser]);
@@ -120,8 +121,8 @@ export const loginAsUser = async (name, password) => {
     );
 
     if (user) {
-      currentUser = user;
-      return currentUser.id;
+      currentUserId = user.id;
+      return currentUserId;
     } else {
       console.warn("Wrong password attempt");
       return null;
@@ -132,17 +133,37 @@ export const loginAsUser = async (name, password) => {
   }
 };
 
-export function getCurrentUser() {
-  if (currentUser == null) {
-    return "Not logged in";
+export const getUserById = async (id) => {
+  try {
+    const users = await importDataFromJson();
+    let returnUser;
+
+    users.forEach((user) => {
+      if (user.id == id) {
+        returnUser = user;
+      }
+    });
+
+    return returnUser;
+  } catch (error) {
+    console.error("Error generating new ID:", error);
+    throw error;
   }
+};
+
+export const getCurrentUser = async () => {
+  if (currentUserId == null) {
+    return null;
+  }
+
+  const currentUser = await getUserById(currentUserId);
   return currentUser;
-}
+};
 
 export const clearUserData = async () => {
   try {
     await AsyncStorage.clear();
-    currentUser = null;
+    currentUserId = null;
     console.info("User data was cleared.");
   } catch (error) {
     console.error("Error clearing data:", error);
