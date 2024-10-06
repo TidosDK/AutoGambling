@@ -6,6 +6,9 @@ import { StyleSheet } from 'react-native';
 import MyComponent from './components/TestComponent';
 import ProductList from './components/product/productList';
 import ProductView from './components/product/productView';
+import CarList from './components/utils/CarList';
+import UserList from './components/utils/UserList';
+
 
 export default function App() {
 
@@ -25,6 +28,9 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Products" component={ProductStackNavigator} options={{ headerShown: false }} />
+        <Tab.Screen name="Debug (Car List)" component={CarList} />
+        <Tab.Screen name="Debug (User List)" component={UserList} />
+        <Tab.Screen name="MyComponent1" component={MyComponent} />
         <Tab.Screen name="MyComponent2" component={MyComponent} />
         <Tab.Screen name="MyComponent3" component={MyComponent} />
       </Tab.Navigator>
