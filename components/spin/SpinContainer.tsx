@@ -4,7 +4,7 @@ import TicketCard from './TicketCard';
 
 const getRandomRarity = () => {
   const rarities = ['Common', 'Rare', 'Epic', 'Legendary'];
-  const rand : number = Math.random();
+  const rand: number = Math.random();
   if (rand < 0.6)
     return rarities[0];
   if (rand < 0.85)
@@ -22,19 +22,19 @@ interface SpinContainerProp {
   setTicketRarities: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const SpinContainer: React.FC<SpinContainerProp> = ({speed, ticketPositions, setTicketPositions, ticketRarities, setTicketRarities}) => {
+const SpinContainer: React.FC<SpinContainerProp> = ({ speed, ticketPositions, setTicketPositions, ticketRarities, setTicketRarities }) => {
   const ticketWidth = 100;
-  const numTickets = 5; 
+  const numTickets = 5;
 
   useEffect(() => {
     const initialPositions = [];
     const initialRarities = [];
-    
+
     for (let i = 0; i < numTickets; i++) {
       initialPositions.push(i * (ticketWidth + 10)); // Set even spacing between tickets
       initialRarities.push(getRandomRarity()); // Assign random rarity
     }
-    
+
     setTicketPositions(initialPositions);
     setTicketRarities(initialRarities);
   }, []);
@@ -60,12 +60,12 @@ const SpinContainer: React.FC<SpinContainerProp> = ({speed, ticketPositions, set
       });
 
       setTicketRarities((prevRarities) => {
-          return prevRarities.map((rarity, index) => {
-            if (someIndex == index) {
-              return getRandomRarity();
-            }
-            return rarity;
-          });
+        return prevRarities.map((rarity, index) => {
+          if (someIndex == index) {
+            return getRandomRarity();
+          }
+          return rarity;
+        });
       });
 
     }, 16); // Move every 16ms (around 60 frames per second)
