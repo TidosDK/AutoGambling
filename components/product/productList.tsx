@@ -8,7 +8,7 @@ export default function ProductList() {
     const navigation = useNavigation();
 
     const productPage = () => {
-        navigation.navigate('Product View')
+        navigation.navigate('ProductView');
     }
     
     return (
@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
-      alignItems: 'center',
       width: screen.availWidth,
     },
   });

@@ -17,7 +17,7 @@ export default function CarItem(Car: Car) {
   const navigation = useNavigation();
 
   const handlePress = () => {
-    navigation.navigate('Product View', {...Car});
+    navigation.navigate('ProductView', {...Car});
   };
 
   return (

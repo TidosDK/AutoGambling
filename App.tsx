@@ -8,6 +8,7 @@ import ProductList from './components/product/productList';
 import ProductView from './components/product/productView';
 import CarList from './components/utils/CarList';
 import UserList from './components/utils/UserList';
+import ProceedPage from './components/product/proceedPage';
 
 
 export default function App() {
@@ -18,8 +19,9 @@ export default function App() {
   function ProductStackNavigator(){
       return (
         <Stack.Navigator>
-          <Stack.Screen name="Product List" component={ProductList} />
-          <Stack.Screen name="Product View" component={ProductView} />
+          <Stack.Screen name="ProductList" component={ProductList} />
+          <Stack.Screen name="ProductView" component={ProductView} />
+          <Stack.Screen name="ProceedPage" component={ProceedPage} />
         </Stack.Navigator>
       )
   }
@@ -28,7 +30,7 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Products" component={ProductStackNavigator} options={{ headerShown: false }} />
-        <Tab.Screen name="Debug (Car List)" component={CarList} />
+        { /* <Tab.Screen name="Debug (Car List)" component={CarList} /> */}
         <Tab.Screen name="Debug (User List)" component={UserList} />
         <Tab.Screen name="MyComponent1" component={MyComponent} />
         <Tab.Screen name="MyComponent2" component={MyComponent} />

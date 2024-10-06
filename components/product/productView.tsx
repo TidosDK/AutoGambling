@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal, Button } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation, NavigationProp } from "@react-navigation/native";
 import { Calendar, DateObject } from 'react-native-calendars';
 
 type RouteParams = {
@@ -10,6 +10,19 @@ type RouteParams = {
     color: string;
     pricePerDay: number;
     isAvailable: boolean;
+};
+
+type RootStackParamList = {
+    ProductView: RouteParams;
+    ProceedPage: {
+        make: string;
+        model: string;
+        pricePerDay: number;
+        extraKM: number;
+        extraDriver: number;
+        daysRented: number;
+        totalPrice: number;
+    };
 };
 
 export default function ProductView() {
@@ -22,6 +35,20 @@ export default function ProductView() {
         pricePerDay,
         isAvailable,
     } = route.params as RouteParams;
+
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+    const handleProceed = () => {
+        navigation.navigate('ProceedPage', {
+            make,
+            model,
+            pricePerDay,
+            extraKM,
+            extraDriver,
+            daysRented,
+            totalPrice,
+        });
+    };
 
     const [extraKM, setExtraKM] = useState(0);
     const [extraDriver, setExtraDriver] = useState(0);
@@ -244,7 +271,7 @@ export default function ProductView() {
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.proceedButton}>
+                <TouchableOpacity style={styles.proceedButton} onPress={handleProceed}>
                     <Text style={styles.proceedButtonText}>PROCEED</Text>
                 </TouchableOpacity>
             </View>
