@@ -22,6 +22,8 @@ type RootStackParamList = {
         extraDriver: number;
         daysRented: number;
         totalPrice: number;
+        extra_km_cost: number;
+        extra_driver_cost: number;
     };
 };
 
@@ -38,6 +40,15 @@ export default function ProductView() {
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+
+    const [extraKM, setExtraKM] = useState(0);
+    const [extraDriver, setExtraDriver] = useState(0);
+
+    const extra_km_cost = 100;
+    const extra_driver_cost = 150;
+
+    const [totalPrice, setTotalPrice] = useState(0);
+
     const handleProceed = () => {
         navigation.navigate('ProceedPage', {
             make,
@@ -47,16 +58,10 @@ export default function ProductView() {
             extraDriver,
             daysRented,
             totalPrice,
+            extra_km_cost,
+            extra_driver_cost,
         });
     };
-
-    const [extraKM, setExtraKM] = useState(0);
-    const [extraDriver, setExtraDriver] = useState(0);
-
-    const extra_km_cost = 100;
-    const extra_driver_cost = 150;
-
-    const [totalPrice, setTotalPrice] = useState(0);
 
     const [selectedRange, setSelectedRange] = useState<{ [date: string]: { startingDay?: boolean; endingDay?: boolean; color: string } }>({});
     const [showDatePicker, setShowDatePicker] = useState(false);

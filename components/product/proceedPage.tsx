@@ -10,6 +10,8 @@ type RouteParams = {
     extraDriver: number;
     daysRented: number;
     totalPrice: number;
+    extra_km_cost: number;
+    extra_driver_cost: number;
 };
 
 export default function ProceedPage() {
@@ -22,6 +24,8 @@ export default function ProceedPage() {
         extraDriver,
         daysRented,
         totalPrice,
+        extra_km_cost,
+        extra_driver_cost,
     } = route.params as RouteParams;
 
     return (
@@ -36,30 +40,29 @@ export default function ProceedPage() {
                 />
                 <View style={styles.cartDetails}>
                     <Text style={styles.cartTitle}>{make} {model}</Text>
-                    <Text style={styles.cartText}>{daysRented} x car rental</Text>
                     <Text style={styles.cartText}>
                         {daysRented > 1 ? `Total days: ${daysRented}` : "Total days: 1"}
                     </Text>
                 </View>
-                <Text style={styles.cartPrice}>{pricePerDay * daysRented} kr.</Text>
+                <Text style={styles.cartPrice}>{pricePerDay * daysRented} DKK</Text>
             </View>
 
             <View style={styles.summaryContainer}>
                 <View style={styles.summaryRow}>
-                    <Text style={styles.summary}>Extra km:</Text>
-                    <Text style={styles.summary}>{extraKM} km</Text>
+                    <Text style={styles.summary}>{extraKM} extra km:</Text>
+                    <Text style={styles.summary}>{extra_km_cost * (extraKM/100)} DKK</Text>
                 </View>
                 <View style={styles.summaryRow}>
-                    <Text style={styles.summary}>Added drivers:</Text>
-                    <Text style={styles.summary}>{extraDriver}</Text>
+                    <Text style={styles.summary}>{extraDriver} {extraDriver > 1 ? 'added drivers' : 'added driver'}:</Text>
+                    <Text style={styles.summary}>{extra_driver_cost * extraDriver} DKK</Text>
                 </View>
                 <View style={styles.summaryRow}>
                     <Text style={styles.summary}>Tax 25%:</Text>
-                    <Text style={styles.summary}>{((pricePerDay * daysRented) * 0.25).toFixed(2)} kr.</Text>
+                    <Text style={styles.summary}>{((pricePerDay * daysRented) * 0.25).toFixed(2)} DKK</Text>
                 </View>
                 <View style={styles.summaryRow}>
                     <Text style={styles.summary}>Subtotal:</Text>
-                    <Text style={styles.summaryTotalValue}>{totalPrice.toFixed(2)} kr.</Text>
+                    <Text style={styles.summaryTotalValue}>{totalPrice.toFixed(2)} DKK</Text>
                 </View>
             </View>
 
