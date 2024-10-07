@@ -9,7 +9,7 @@ import ProductView from './components/product/productView';
 import CarList from './components/utils/CarList';
 import UserList from './components/utils/UserList';
 import ProceedPage from './components/product/proceedPage';
-
+import SpinTab from './components/spin/SpinTab';
 
 export default function App() {
 
@@ -33,7 +33,7 @@ export default function App() {
         { /* <Tab.Screen name="Debug (Car List)" component={CarList} /> */}
         <Tab.Screen name="Debug (User List)" component={UserList} />
         <Tab.Screen name="MyComponent1" component={MyComponent} />
-        <Tab.Screen name="MyComponent2" component={MyComponent} />
+        <Tab.Screen name="Spin" component={SpinTab} />
         <Tab.Screen name="MyComponent3" component={MyComponent} />
       </Tab.Navigator>
     </NavigationContainer>
