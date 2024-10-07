@@ -1,6 +1,6 @@
 import { FlatList } from "react-native";
 import UserItem, { UserType } from './UserItem';
-import { importDataFromJson } from './UserDataHandler';
+import { importDataFromJson } from '../UserDataHandler';
 import React, { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 

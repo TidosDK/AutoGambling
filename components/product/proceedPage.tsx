@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 
 type RouteParams = {
     make: string;
@@ -14,8 +14,37 @@ type RouteParams = {
     extra_driver_cost: number;
 };
 
+type RootStackParamList = {
+    ProductView: RouteParams;
+    ProceedPage: {
+        make: string;
+        model: string;
+        pricePerDay: number;
+        extraKM: number;
+        extraDriver: number;
+        daysRented: number;
+        totalPrice: number;
+        extra_km_cost: number;
+        extra_driver_cost: number;
+    };
+    PaymentScreen: {
+        make: string;
+        model: string;
+        pricePerDay: number;
+        extraKM: number;
+        extraDriver: number;
+        daysRented: number;
+        totalPrice: number;
+        extra_km_cost: number;
+        extra_driver_cost: number;
+    };
+};
+
 export default function ProceedPage() {
     const route = useRoute();
+
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
     const {
         make,
         model,
@@ -27,6 +56,10 @@ export default function ProceedPage() {
         extra_km_cost,
         extra_driver_cost,
     } = route.params as RouteParams;
+
+    const handleProceed = () => {
+        navigation.navigate('PaymentScreen');
+    };
 
     return (
         <View style={styles.container}>
@@ -69,7 +102,7 @@ export default function ProceedPage() {
             <View style={styles.separator} />
 
             <View style={styles.actionsContainer}>
-                <TouchableOpacity style={styles.checkoutButton}>
+                <TouchableOpacity style={styles.checkoutButton} onPress={handleProceed}>
                     <Text style={styles.buttonText}>Checkout</Text>
                 </TouchableOpacity>
                 <Text style={styles.orText}>or</Text>

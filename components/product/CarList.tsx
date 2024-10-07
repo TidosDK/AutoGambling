@@ -6,8 +6,8 @@ import CarJSONData from '../../assets/cars/cars.json';
 export default function CarList() {
     return (
         <FlatList
-        data={CarJSONData}
-        renderItem={({ item }) => (
+            data={CarJSONData}
+            renderItem={({ item }) => (
                 <CarItem
                     id={item.id.toString()}
                     make={item.make}

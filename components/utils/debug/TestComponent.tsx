@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet } from "react-native";
-import { importDataFromJson, createUser, clearUserData, getCurrentUser } from './utils/UserDataHandler';
-import User from "./utils/User";
+import { importDataFromJson, createUser, clearUserData, getCurrentUser } from '../UserDataHandler';
+import User from "../User";
 
 export default function MyComponent() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
